@@ -1,0 +1,9 @@
+{
+  "openai_api_key": "openAI key",
+  "translate": {
+    "source": "ja",
+    "target": "en"
+  },
+  "deepl_api_key": "deepL key (optional)"
+}
+

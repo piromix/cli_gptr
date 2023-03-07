@@ -1,13 +1,14 @@
 name: multi-target-build
+
 on:
   workflow-dispatch:
-
 
 env:
   PROJECT_NAME: cli_gptr
 
 jobs:
   multi-target-build:
+
     strategy:
       matrix:
         target:

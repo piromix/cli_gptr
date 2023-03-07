@@ -31,7 +31,7 @@ jobs:
       - name: Install musl tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
-          sudo apt install -qq -y musl-tools libssl-dev --no-install-recommends
+          sudo apt install -qq -y musl-tools --no-install-recommends
 
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
@@ -51,14 +51,21 @@ jobs:
       - name: Check release Directory for Linux
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
+          zip --junk-paths gptr-${{ matrix.target }}.zip target/${{ matrix.target }}/release/gptr config/gptr.json config/gptr_predefine.json
           ls -la target/${{ matrix.target }}/release/
       - name: Check release Directory for Mac
         if: matrix.target == 'x86_64-apple-darwin'
         run: |
-          ls -la target/${{ matrix.target }}/release/
+          zip --junk-paths gptr-${{ matrix.target }}.zip target/${{ matrix.target }}/release/gptr config/gptr.json config/gptr_predefine.json
       - name: Check release Directory for Windows
         if: matrix.target == 'x86_64-pc-windows-msvc'
         run: |
-          dir target/${{ matrix.target }}/release/
+          powershell Compress-Archive -Path target/${{ matrix.target }}/release/gptr.exe,config/gptr.json,config/gptr_predefine.json -DestinationPath gptr-${{ matrix.target }}.zip
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PROJECT_NAME }}-${{ matrix.target }}
+          path: |
+            gptr-${{ matrix.target }}.zip
 
 

@@ -8,7 +8,7 @@ pub struct Args {
     #[arg(default_value_t = String::from("-"))]
     pub prompt: String,
 
-    /// translate prompt to english and result to japanese
+    /// translate prompt
     #[arg(short, long)]
     pub translate: bool,
 

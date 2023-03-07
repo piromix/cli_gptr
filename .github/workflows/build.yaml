@@ -1,6 +1,11 @@
 name: multi-target-build
 on:
   workflow_dispatch:
+    inputs:
+      versionNumber:
+        description: 'release version number'
+        required: true
+        default: ''
 
 env:
   PROJECT_NAME: cli_gptr
@@ -12,15 +17,15 @@ jobs:
       matrix:
         target:
           - x86_64-unknown-linux-musl
-          - x86_64-apple-darwin
-          - x86_64-pc-windows-msvc
+#          - x86_64-apple-darwin
+#          - x86_64-pc-windows-msvc
         include:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-          - target: x86_64-apple-darwin
-            os: macos-latest
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
+#          - target: x86_64-apple-darwin
+#            os: macos-latest
+#          - target: x86_64-pc-windows-msvc
+#            os: windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -48,24 +53,115 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }}
 
-      - name: Check release Directory for Linux
+      - name: Compress release files for Linux
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
           zip --junk-paths gptr-${{ matrix.target }}.zip target/${{ matrix.target }}/release/gptr config/gptr.json config/gptr_predefine.json
-          ls -la target/${{ matrix.target }}/release/
-      - name: Check release Directory for Mac
+      - name: Compress release files for Mac
         if: matrix.target == 'x86_64-apple-darwin'
         run: |
           zip --junk-paths gptr-${{ matrix.target }}.zip target/${{ matrix.target }}/release/gptr config/gptr.json config/gptr_predefine.json
-      - name: Check release Directory for Windows
+      - name: Compress release files for Windows
         if: matrix.target == 'x86_64-pc-windows-msvc'
         run: |
           powershell Compress-Archive -Path target/${{ matrix.target }}/release/gptr.exe,config/gptr.json,config/gptr_predefine.json -DestinationPath gptr-${{ matrix.target }}.zip
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.PROJECT_NAME }}-${{ matrix.target }}
+          name: ${{ env.PROJECT_NAME }}-${{ github.event.inputs.versionNumber }}-${{ matrix.target }}
           path: |
             gptr-${{ matrix.target }}.zip
+          retention-days: 1
 
 
+
+
+  draft-release:
+    name: Release Draft
+    needs: [multi-target-build]
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.versionNumber }}
+          release_name: Release ${{ github.event.inputs.versionNumber }}
+          draft: true
+          prerelease: false
+      - name: Save upload url of this draft release.
+        run: |
+          echo '${{ steps.create_release.outputs.upload_url }}' > upload_url.txt
+      - name: Upload 'upload_url.txt' artifact
+        uses: actions/upload-artifact@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: draft-release
+          path: upload_url.txt
+
+  attach-assets-to-release:
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-musl
+#          - x86_64-apple-darwin
+#          - x86_64-pc-windows-msvc
+        include:
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+#          - target: x86_64-apple-darwin
+#            os: macos-latest
+#          - target: x86_64-pc-windows-msvc
+#            os: windows-latest
+
+    needs: [draft-release]
+    steps:
+      - name: Download upload_url.txt
+        uses: actions/download-artifact@v2
+        with:
+          name: draft-release
+          path: ./dist
+      - id: upload-url
+        run: |
+          echo "::set-output name=url::$(cat ./dist/upload_url.txt)"
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.upload-url.outputs.url }}
+          asset_path: ./artifacts/gptr-${{ github.event.inputs.versionNumber }}-${{ matrix.target }}.zip
+          asset_name: ${{ env.PROJECT_NAME }}-${{ github.event.inputs.versionNumber }}-${{ matrix.target }}.zip
+          asset_content_type: application/zip
+
+#      - name: Upload Release Asset for darwin
+#        id: upload-release-asset-for-darwin
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./artifacts/cli_gptr-x86_64-apple-darwin.zip
+#          asset_name: cli_gptr-x86_64-apple-darwin.zip
+#          asset_content_type: application/zip
+#
+#      - name: Upload Release Asset for windows
+#        id: upload-release-asset-for-windows
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./artifacts/cli_gptr-x86_64-pc-windows-msvc.zip
+#          asset_name: cli_gptr-x86_64-pc-windows-msvc.zip
+#          asset_content_type: application/zip

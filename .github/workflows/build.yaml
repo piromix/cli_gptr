@@ -17,15 +17,15 @@ jobs:
       matrix:
         target:
           - x86_64-unknown-linux-musl
-#          - x86_64-apple-darwin
-#          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
+          - x86_64-pc-windows-msvc
         include:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-#          - target: x86_64-apple-darwin
-#            os: macos-latest
-#          - target: x86_64-pc-windows-msvc
-#            os: windows-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -106,15 +106,15 @@ jobs:
       matrix:
         target:
           - x86_64-unknown-linux-musl
-#          - x86_64-apple-darwin
-#          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
+          - x86_64-pc-windows-msvc
         include:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-#          - target: x86_64-apple-darwin
-#            os: macos-latest
-#          - target: x86_64-pc-windows-msvc
-#            os: windows-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
 
     needs: [draft-release]
     runs-on: ${{ matrix.os }}
@@ -144,25 +144,3 @@ jobs:
           asset_path: ./artifacts/${{ env.PROJECT_NAME }}-${{ github.event.inputs.versionNumber }}-${{ matrix.target }}.zip
           asset_name: ${{ env.PROJECT_NAME }}-${{ github.event.inputs.versionNumber }}-${{ matrix.target }}.zip
           asset_content_type: application/zip
-
-#      - name: Upload Release Asset for darwin
-#        id: upload-release-asset-for-darwin
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ./artifacts/cli_gptr-x86_64-apple-darwin.zip
-#          asset_name: cli_gptr-x86_64-apple-darwin.zip
-#          asset_content_type: application/zip
-#
-#      - name: Upload Release Asset for windows
-#        id: upload-release-asset-for-windows
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ./artifacts/cli_gptr-x86_64-pc-windows-msvc.zip
-#          asset_name: cli_gptr-x86_64-pc-windows-msvc.zip
-#          asset_content_type: application/zip

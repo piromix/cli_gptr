@@ -1,0 +1,16 @@
+{
+  "predefine": {
+	  "ts": {
+		  "content": "question about typescript. provide only answer.",
+		  "translate": false
+	  },
+	  "en": {
+		  "content": "translate into English",
+		  "translate": false
+	  },
+	  "code": {
+		  "content": "Provide code and only code as output without any additional text",
+		  "translate": false
+	  }
+  }
+}

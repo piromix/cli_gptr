@@ -1,5 +1,4 @@
 name: multi-target-build
-
 on:
   workflow-dispatch:
 

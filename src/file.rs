@@ -1,5 +1,6 @@
 use std::{env, fs};
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
+use dirs::home_dir;
 
 fn get_current_directory() -> PathBuf {
     return env::current_exe().unwrap();
@@ -10,7 +11,7 @@ pub fn read_config(file_name: String) -> Option<String> {
 }
 
 fn read_config_in_home_dir(file_name: &String) -> Option<String> {
-    let config_path = Path::new(&env::var("HOME").unwrap()).join(file_name);
+    let config_path = home_dir().unwrap().join(file_name);
     if config_path.exists() && config_path.is_file() {
         Some(fs::read_to_string(config_path).expect("unable to read config file"))
     } else {
@@ -19,7 +20,7 @@ fn read_config_in_home_dir(file_name: &String) -> Option<String> {
 }
 
 fn read_config_from_config_dir_under_home_dir(file_name: &String) -> Option<String> {
-    let config_path = Path::new(&env::var("HOME").unwrap()).join(".config").join(file_name);
+    let config_path = home_dir().unwrap().join(".config").join(file_name);
     if config_path.exists() && config_path.is_file() {
         Some(fs::read_to_string(config_path).expect("unable to read config file"))
     } else {

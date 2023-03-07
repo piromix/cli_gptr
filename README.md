@@ -4,7 +4,6 @@ chatGPTをターミナルから利用する簡単なCLIツールです。
 
 ```shell
 gptr "1+1は？"
-gptr -t "1+1は？"
 ```
 
 利用できるフラグや説明は以下コマンドで表示できます。
@@ -13,6 +12,15 @@ gptr -t "1+1は？"
 gptr -h
 ```
 
+複数行入力を行いたい場合は、説明を入力せずに実行し最後にCtrl+Dを押してください。
+```shell
+> gptr
+1+1の
+回答を教えて
+Ctrl+dを入力して完了
+```
+
+```shell
 ## 設定
 
 利用するのはopenAIのAPIキーが必要になります。[openAI](https://platform.openai.com/account/api-keys)から取得してください。  

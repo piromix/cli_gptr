@@ -1,6 +1,6 @@
 name: multi-target-build
 on:
-  workflow-dispatch:
+  workflow_dispatch:
 
 env:
   PROJECT_NAME: cli_gptr

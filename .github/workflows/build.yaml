@@ -75,11 +75,10 @@ jobs:
           retention-days: 1
 
 
-
-
   draft-release:
     name: Release Draft
     needs: [multi-target-build]
+    runs-on: ubuntu-latest
     steps:
       - name: Create Release
         id: create_release
@@ -118,6 +117,7 @@ jobs:
 #            os: windows-latest
 
     needs: [draft-release]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Download upload_url.txt
         uses: actions/download-artifact@v2

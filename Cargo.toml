@@ -15,6 +15,6 @@ reqwest-middleware = "0.2.0"
 serde_json = "1.0.93"
 serde = "1.0.152"
 deepl-api = { git = "https://github.com/Niedzwiedzw/deepl-api-rs", rev = "4ce01e788513474ac540c28397d0808eb8c3c8af" }
-spinners = "4.1.0"
+spinners = { git = "https://github.com/FGRibreau/spinners/", rev = "8b4d130e80cc7c8d2111c95bdd6448bf8fc419f0"}
 openssl = { version = "0.10.45", features = ["vendored"] }
 dirs = "4.0.0"

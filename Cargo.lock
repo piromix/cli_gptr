@@ -1199,8 +1199,7 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 [[package]]
 name = "spinners"
 version = "4.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08615eea740067d9899969bc2891c68a19c315cb1f66640af9a9ecb91b13bcab"
+source = "git+https://github.com/FGRibreau/spinners/?rev=8b4d130e80cc7c8d2111c95bdd6448bf8fc419f0#8b4d130e80cc7c8d2111c95bdd6448bf8fc419f0"
 dependencies = [
  "lazy_static",
  "maplit",

@@ -133,7 +133,11 @@ pub async fn run(args: Args) -> Result<()> {
 
     let prompts = get_prompts(&args, &config).await;
 
-    let mut sp = Spinner::new(Spinners::Dots9, "Waiting for chatGPT response...".to_string());
+    let mut sp = Spinner::with_stream(
+        Spinners::Dots9,
+        "Waiting for chatGPT response...".to_string(),
+        Stream::Stderr,
+    );
 
     let res = Client::new()
         .async_query(prompts.unwrap(), &config.openai_api_key)

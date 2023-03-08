@@ -124,6 +124,7 @@ jobs:
 #          - target: x86_64-pc-windows-msvc
 #            os: windows-latest
           - target: aarch64-apple-darwin
+            arch: aarch64
             os: macos-latest
 
     needs: [draft-release]

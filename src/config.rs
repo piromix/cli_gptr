@@ -1,5 +1,5 @@
-use std::env;
 use crate::file::read_config;
+use std::env;
 
 #[derive(Debug)]
 pub struct Config {
@@ -18,13 +18,16 @@ impl Config {
             let openai_api_key = config["openai_api_key"].as_str().unwrap().to_string();
             let translate_source = config["translate"]["source"].as_str().unwrap().to_string();
             let translate_target = config["translate"]["target"].as_str().unwrap().to_string();
-            let deepl_api_key = config["deepl_api_key"].as_str().and_then(|s| Some(s.to_string())).or_else(|| None);
+            let deepl_api_key = config["deepl_api_key"]
+                .as_str()
+                .and_then(|s| Some(s.to_string()))
+                .or_else(|| None);
             return Self {
                 openai_api_key,
                 translate_source,
                 translate_target,
                 deepl_api_key,
-            }
+            };
         } else {
             Self {
                 openai_api_key: env::var("OPENAI_API_KEY").expect("OPENAI_API_KEY must be set"),

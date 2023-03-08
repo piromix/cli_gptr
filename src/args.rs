@@ -1,5 +1,5 @@
-use clap::Parser;
 use anyhow::Result;
+use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -16,6 +16,9 @@ pub struct Args {
     #[arg(short, long)]
     pub predefine: Option<String>,
 
+    /// display verbose output
+    #[arg(short, long)]
+    pub verbose: bool,
 }
 
 impl Args {

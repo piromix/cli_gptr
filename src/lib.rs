@@ -53,13 +53,18 @@ async fn get_prompts(args: &Args, config: &Config) -> Result<Vec<Message>> {
                         )
                         .await
                         .unwrap();
-                    println!("translated user prompt: {}", translate);
+
+                    args.verbose
+                        .then(|| eprintln!("translated predefine: {}", translate));
+
                     messages.push(Message {
                         content: translate,
                         role: "system".to_string(),
                     });
                 } else {
-                    println!("user prompt: {}", p.content);
+                    args.verbose
+                        .then(|| eprintln!("user predefine: {}", p.content));
+
                     messages.push(Message {
                         content: p.content.clone(),
                         role: "system".to_string(),
@@ -79,7 +84,10 @@ async fn get_prompts(args: &Args, config: &Config) -> Result<Vec<Message>> {
             )
             .await
             .unwrap();
-        println!("translated prompt: {}", translate);
+
+        args.verbose
+            .then(|| eprintln!("translated prompt: {}", translate));
+
         messages.push(Message {
             content: translate,
             role: "user".to_string(),
@@ -96,7 +104,9 @@ async fn get_prompts(args: &Args, config: &Config) -> Result<Vec<Message>> {
 
 async fn translate_answer_if_need(args: &Args, config: &Config, answer: String) -> String {
     return if args.translate {
-        println!("chatGPT response: {}", answer);
+        args.verbose
+            .then(|| eprintln!("chatGPT response: {}", answer));
+
         deepl::Deepl::new(config.deepl_api_key.clone())
             .translate(
                 &answer,
